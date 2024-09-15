@@ -1,4 +1,8 @@
-nodesMap = {
+"""
+A graph that defines the distance between each of the nodes and its neighbors
+"""
+
+nodes_map: dict[str, dict[str, int]] = {
     "Arad": {
         "Sibiu": 140,
         "Timisoara": 118,
@@ -14,6 +18,10 @@ nodesMap = {
         "Dobreta": 120,
         "Pitesti": 138,
         "Rimnicu Vilcea": 146,
+    },
+    "Dobreta": {
+        "Craiova": 120,
+        "Mehadia": 75,
     },
     "Eforie": {
         "Hirsova": 86,
@@ -49,9 +57,11 @@ nodesMap = {
     },
     "Pitesti": {
         "Bucharest": 101,
+        "Craiova": 138,
         "Rimnicu Vilcea": 97,
     },
     "Rimnicu Vilcea": {
+        "Craiova": 146,
         "Pitesti": 97,
         "Sibiu": 80,
     },
@@ -78,4 +88,30 @@ nodesMap = {
         "Arad": 75,
         "Oradea": 71,
     },
+}
+
+"""
+Map describing the straight line distance between each nodes and Bucharest
+"""
+bucharest_sld_map: dict[str, int] = {
+    "Arad": 366,
+    "Bucharest": 0,
+    "Craiova": 160,
+    "Drobeta": 242,
+    "Eforie": 161,
+    "Fagaras": 176,
+    "Giurgiu": 77,
+    "Hirsova": 151,
+    "Iasi": 226,
+    "Lugoj": 244,
+    "Mehadia": 241,
+    "Neamt": 234,
+    "Oradea": 380,
+    "Pitesti": 100,
+    "Rimnicu Vilcea": 193,
+    "Sibiu": 253,
+    "Timisoara": 329,
+    "Urziceni": 80,
+    "Vaslui": 199,
+    "Zerind": 374,
 }
