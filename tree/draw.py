@@ -1,15 +1,22 @@
 import turtle as ttl
 
-box_length = 50
+box_length = 50  # Length of the rectangle
 box_half_length = box_length / 2
-box_height = 25
-x_padding = 10
-y_padding = 30
+box_height = 25  # Height of the rectangle
+x_padding = 10  # Padding between rectangle
+y_padding = 30  # Padding between depths
 font = ("Arial", 12, "normal")
-starting_y = 300
+starting_y = 300  # Y position for the root rectangle
 
 
-def initialize_turtle():
+def initialize_turtle() -> None:
+    """
+    Initializes turtle for usage.
+
+    Returns:
+        None: This function does not return anything.
+    """
+
     ttl.speed(0)
 
     ttl.up()

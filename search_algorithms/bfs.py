@@ -28,6 +28,7 @@ def BFS(
     while True:
         current_item = queue.dequeue()
         state = current_item[0]  # State name
+
         path_to_state = [*current_item[1], state]  # Path to the state
 
         cost = (
@@ -45,8 +46,6 @@ def BFS(
 
         for neighbor in nodes_map[state]:
             queue.enqueue((neighbor, path_to_state))
-
-    print(path_to_state)
 
     if print_tree:
         tree.set_goal(path_to_state)

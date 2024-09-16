@@ -82,3 +82,5 @@ elif args.algorithm == "aStarBucharestRelative":
         generate_sld_relative_bucharest(args.goal_state),
         args.print_tree,
     )
+
+print(f"Path to Goal: {", ".join(path_to_state)}")

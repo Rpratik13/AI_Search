@@ -52,8 +52,6 @@ def DFS(
         for neighbor in neighbors:
             stack.push((neighbor, path_to_state))
 
-    print(path_to_state)
-
     if print_tree:
         tree.set_goal(path_to_state)
         tree.print()

@@ -4,6 +4,38 @@ from tree.tree import Tree
 from graph import nodes_map, bucharest_sld_map
 
 
+def generate_node_count_map() -> dict[str, int]:
+    """
+    Generates the number of nodes between each of the nodes in the map.
+
+    Returns:
+        dict[str, [str, int]]: Map representing the number of nodes between each
+        of the nodes.
+    """
+
+    output = {}
+
+    for node in nodes_map:
+        output[node] = {
+            node: 0,
+        }
+
+        node_to_expand = [(i, 1) for i in list(nodes_map[node])]
+
+        while len(node_to_expand):
+            current_node = node_to_expand.pop(0)
+
+            if current_node[0] in output[node]:
+                continue
+
+            output[node][current_node[0]] = current_node[1]
+
+            for neighbor in nodes_map[current_node[0]]:
+                node_to_expand.append((neighbor, current_node[1] + 1))
+
+    return output
+
+
 def generate_sld_relative_bucharest(goal_state: str) -> dict[str, int]:
     """
     Generates the straight line distance between each node and goal state by
@@ -18,37 +50,37 @@ def generate_sld_relative_bucharest(goal_state: str) -> dict[str, int]:
         each node.
     """
 
+    node_count_map = generate_node_count_map()
+
     if goal_state == "Bucharest":
-        return bucharest_sld_map
+        return {node[0]: node[1][0] for node in list(bucharest_sld_map.items())}
 
     output = {
         goal_state: 0,
     }
 
-    nodes_to_expand = []
+    for node in list(nodes_map.keys()):
+        if node in output:
+            continue
 
-    for neighbor in nodes_map[goal_state]:
-        output[neighbor] = neighbors[neighbor]
-        nodes_to_expand.append(neighbor)
+        angle = abs(bucharest_sld_map[node][1] - bucharest_sld_map[goal_state][1])
+        angle = 360 - angle if angle >= 180 else angle
 
-    while len(nodes_to_expand):
-        node_name = nodes_to_expand.pop(0)
-        neighbors = nodes_map[node_name]
-
-        for neighbor in neighbors:
-            if neighbor in output:
-                continue
-
-            sld = (output[node_name] ** 2 + neighbors[neighbor] ** 2) ** 0.5
-
-            if sld > output[node_name] + neighbors[neighbor]:
-                sld -= sld - (output[node_name] + neighbors[neighbor]) - 10
-            elif sld < abs(output[node_name] - neighbors[neighbor]):
-                sld += sld - abs(output[node_name] + neighbors[neighbor]) + 10
-
-            output[neighbor] = int(math.floor(sld))
-
-            nodes_to_expand.append(neighbor)
+        output[node] = int(
+            (node_count_map[node][goal_state] * 100)
+            + math.floor(
+                math.sqrt(  # Cosine Rule
+                    (bucharest_sld_map[node][0] ** 2)
+                    + (bucharest_sld_map[goal_state][0] ** 2)
+                    - (
+                        2
+                        * bucharest_sld_map[goal_state][0]
+                        * bucharest_sld_map[node][0]
+                        * math.cos(angle * math.pi / 180)
+                    )
+                )
+            )
+        )
 
     return output
 
@@ -56,7 +88,7 @@ def generate_sld_relative_bucharest(goal_state: str) -> dict[str, int]:
 def generate_sld(goal_state: str) -> dict[str, int]:
     """
     Generates the straight line distance between each node and goal state by
-    using triangle inequality and pythagoras theorem.
+    using triangle inequality.
 
     Args:
         goal_state (str): Node from which straight line distance is to be
@@ -87,12 +119,10 @@ def generate_sld(goal_state: str) -> dict[str, int]:
             if neighbor in output:
                 continue
 
-            sld = (output[node_name] ** 2 + neighbors[neighbor] ** 2) ** 0.5
+            upper_bound = output[node_name] + neighbors[neighbor]
+            lower_bound = abs(output[node_name] - neighbors[neighbor])
 
-            if sld > output[node_name] + neighbors[neighbor]:
-                sld -= sld - (output[node_name] + neighbors[neighbor]) - 10
-            elif sld < abs(output[node_name] - neighbors[neighbor]):
-                sld += sld - abs(output[node_name] + neighbors[neighbor]) + 10
+            sld = lower_bound + 0.7 * (upper_bound - lower_bound)
 
             output[neighbor] = int(math.floor(sld))
 
@@ -132,7 +162,7 @@ def a_star_search(
 
     while state != goal_state:
         for neighbor in nodes_map[state]:
-            distance_to_next_stateFromNode = (
+            distance_to_next_state_from_node = (
                 total_distance + nodes_map[state][neighbor] + heuristic_map[neighbor]
             )
 
@@ -143,10 +173,10 @@ def a_star_search(
             )
 
             if (
-                distance_to_next_stateFromNode < distance_to_next_state
+                distance_to_next_state_from_node < distance_to_next_state
                 and neighbor not in path_to_state
             ):
-                distance_to_next_state = distance_to_next_stateFromNode
+                distance_to_next_state = distance_to_next_state_from_node
 
                 next_state = neighbor
 
@@ -156,8 +186,6 @@ def a_star_search(
         path_to_state.append(state)
         distance_to_next_state = float("inf")
         next_state = None
-
-    print(path_to_state)
 
     if print_tree:
         tree.set_goal(path_to_state)

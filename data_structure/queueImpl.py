@@ -19,7 +19,7 @@ class Queue:
         self.queue: list[Any] = []
 
     def __repr__(self):
-        return self.queue
+        return ", ".join(map(lambda x: x[0], self.queue))
 
     def enqueue(self, item: Any) -> None:
         """

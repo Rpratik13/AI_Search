@@ -67,8 +67,6 @@ def greedy_search(
                 maxDepth - len(current_item.path_to_state),
             )
 
-    print([*current_item.path_to_state, current_item.name])
-
     if print_tree:
 
         tree.set_goal([*current_item.path_to_state, current_item.name])
