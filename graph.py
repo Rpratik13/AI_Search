@@ -92,7 +92,7 @@ nodes_map: dict[str, dict[str, int]] = {
 }
 
 """
-Map describing the straight line distance between each nodes and Bucharest
+Map describing the straight line distance and angle between each nodes and Bucharest
 """
 bucharest_sld_map: dict[str, int] = {
     "Arad": (366, 160),

@@ -2,38 +2,7 @@ import math
 
 from tree.tree import Tree
 from graph import nodes_map, bucharest_sld_map
-
-
-def generate_node_count_map() -> dict[str, int]:
-    """
-    Generates the number of nodes between each of the nodes in the map.
-
-    Returns:
-        dict[str, [str, int]]: Map representing the number of nodes between each
-        of the nodes.
-    """
-
-    output = {}
-
-    for node in nodes_map:
-        output[node] = {
-            node: 0,
-        }
-
-        node_to_expand = [(i, 1) for i in list(nodes_map[node])]
-
-        while len(node_to_expand):
-            current_node = node_to_expand.pop(0)
-
-            if current_node[0] in output[node]:
-                continue
-
-            output[node][current_node[0]] = current_node[1]
-
-            for neighbor in nodes_map[current_node[0]]:
-                node_to_expand.append((neighbor, current_node[1] + 1))
-
-    return output
+from data_structure.priorityQueueImpl import PriorityQueueItem, PriorityQueue
 
 
 def generate_sld_relative_bucharest(goal_state: str) -> dict[str, int]:
@@ -50,8 +19,6 @@ def generate_sld_relative_bucharest(goal_state: str) -> dict[str, int]:
         each node.
     """
 
-    node_count_map = generate_node_count_map()
-
     if goal_state == "Bucharest":
         return {node[0]: node[1][0] for node in list(bucharest_sld_map.items())}
 
@@ -67,8 +34,7 @@ def generate_sld_relative_bucharest(goal_state: str) -> dict[str, int]:
         angle = 360 - angle if angle >= 180 else angle
 
         output[node] = int(
-            (node_count_map[node][goal_state] * 100)
-            + math.floor(
+            math.floor(
                 math.sqrt(  # Cosine Rule
                     (bucharest_sld_map[node][0] ** 2)
                     + (bucharest_sld_map[goal_state][0] ** 2)
@@ -132,13 +98,10 @@ def generate_sld(goal_state: str) -> dict[str, int]:
 
 
 def a_star_search(
-    initial_state: str,
-    goal_state: str,
-    heuristic_map: dict[str, int],
-    print_tree: bool,
-) -> list[str]:
+    initial_state: str, goal_state: str, heuristic: dict[str, int], print_tree: bool
+):
     """
-    Implements breadth first search to go from initial state to goal state.
+    Implements a star search to go from initial state to goal state.
 
     Args:
         initial_state (str): The state to start from.
@@ -150,45 +113,43 @@ def a_star_search(
     Returns:
         list[str]: The list of nodes in the path from initial state to goal state.
     """
+    to_visit = PriorityQueue()
 
-    state = initial_state
-    path_to_state = [state]
-    next_state = None
-    distance_to_next_state = float("inf")
-    total_distance = 0
+    least_path_cost = {
+        initial_state: 0,
+    }
 
-    tree = Tree()
-    tree.add_node(initial_state, [], None)
+    path_to_state = {
+        initial_state: [initial_state],
+    }
 
-    while state != goal_state:
-        for neighbor in nodes_map[state]:
-            distance_to_next_state_from_node = (
-                total_distance + nodes_map[state][neighbor] + heuristic_map[neighbor]
+    to_visit.enqueue(initial_state, [], 1, 0)
+
+    while len(to_visit.queue):
+        current_node = to_visit.dequeue()
+
+        if current_node.name == goal_state:
+            return path_to_state[goal_state]
+
+        for neighbor in nodes_map[current_node.name]:
+            actual_path_cost = (
+                current_node.cost + nodes_map[current_node.name][neighbor]
             )
-
-            tree.add_node(
-                neighbor,
-                path_to_state,
-                total_distance + nodes_map[state][neighbor] + heuristic_map[neighbor],
-            )
+            heuristic_path_cost = actual_path_cost + heuristic[neighbor]
 
             if (
-                distance_to_next_state_from_node < distance_to_next_state
-                and neighbor not in path_to_state
+                neighbor not in least_path_cost
+                or least_path_cost[neighbor] > actual_path_cost
             ):
-                distance_to_next_state = distance_to_next_state_from_node
-
-                next_state = neighbor
-
-        total_distance += nodes_map[state][neighbor]
-
-        state = next_state
-        path_to_state.append(state)
-        distance_to_next_state = float("inf")
-        next_state = None
-
-    if print_tree:
-        tree.set_goal(path_to_state)
-        tree.print()
-
-    return path_to_state
+                to_visit.enqueue(
+                    neighbor,
+                    [*current_node.path_to_state, current_node.name],
+                    heuristic_path_cost,
+                    actual_path_cost,
+                )
+                path_to_state[neighbor] = [
+                    *current_node.path_to_state,
+                    current_node.name,
+                    neighbor,
+                ]
+                least_path_cost[neighbor] = actual_path_cost

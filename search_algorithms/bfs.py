@@ -45,7 +45,8 @@ def BFS(
             break
 
         for neighbor in nodes_map[state]:
-            queue.enqueue((neighbor, path_to_state))
+            if neighbor not in path_to_state:
+                queue.enqueue((neighbor, path_to_state))
 
     if print_tree:
         tree.set_goal(path_to_state)

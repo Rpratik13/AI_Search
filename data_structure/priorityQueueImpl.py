@@ -6,13 +6,16 @@ class PriorityQueueItem:
         name (str): Name of the node to be stored.
         path_to_state (list[str]): The path taken from initial state to reach the current state.
         priority (int): The priority order in which the item is to be stored.
-
+        cost (int): The cost to reach the node
     """
 
-    def __init__(self, name: str, path_to_state: list[str], priority: int):
+    def __init__(
+        self, name: str, path_to_state: list[str], priority: int, cost: int = 0
+    ):
         self.name = name
         self.path_to_state = path_to_state
         self.priority = priority
+        self.cost = cost
 
     def __repr__(self):
         return f"{self.name}, {self.priority}"
@@ -38,7 +41,9 @@ class PriorityQueue:
     def __repr__(self):
         return self.queue.join(",")
 
-    def enqueue(self, name: str, path_to_state: list[str], priority: int) -> None:
+    def enqueue(
+        self, name: str, path_to_state: list[str], priority: int, cost: int = 0
+    ) -> None:
         """
         Adds item to the queue based on the priority order.
 
@@ -46,6 +51,7 @@ class PriorityQueue:
             name (str): Name of the node to be inserted.
             path_to_state (list[str]): The path taken from the initial state to reach current state.
             priority (int): The priority order in which the item is to be stored.
+            cost (int): The cost to reach the node
 
         Returns:
             None: This function does not return anything.
@@ -61,7 +67,7 @@ class PriorityQueue:
 
         self.queue = (
             self.queue[:index_for_new_item]
-            + [PriorityQueueItem(name, path_to_state, priority)]
+            + [PriorityQueueItem(name, path_to_state, priority, cost)]
             + self.queue[index_for_new_item:]
         )
 
