@@ -23,6 +23,7 @@ def sort_neighbors_by_cost(neighbors: dict[str, int]) -> list[tuple[str, int]]:
 def greedy_search(
     initial_state: str,
     goal_state: str,
+    heuristic: dict[str, int],
     print_tree: bool,
 ) -> list[str]:
     """
@@ -31,6 +32,8 @@ def greedy_search(
     Args:
         initial_state (str): The state to start from.
         goal_state (str): The last state to reach.
+        heuristic_map (dict[str, int]): The map to use for calculating shortest
+        distance to goal.
         print_tree (bool): Decides if state tree is to be printed.
 
     Returns:
@@ -55,14 +58,19 @@ def greedy_search(
             if print_tree:
                 tree.set_goal([*current_item.path_to_state, current_item.name])
                 tree.print()
-                break
+            break
 
         if current_item.name in current_item.path_to_state:
             continue
 
         tree_nodes_to_add = []
 
-        for neighbor in sort_neighbors_by_cost(nodes_map[current_item.name]):
+        neighbors_with_heuristic_cost = {
+            neighbor: heuristic[neighbor]
+            for neighbor in list(nodes_map[current_item.name].keys())
+        }
+
+        for neighbor in sort_neighbors_by_cost(neighbors_with_heuristic_cost):
             queue.enqueue(
                 neighbor[0],
                 [*current_item.path_to_state, current_item.name],

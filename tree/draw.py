@@ -24,7 +24,7 @@ def initialize_turtle() -> None:
     ttl.down()
 
 
-def create_box(name: str, is_goal=False, cost="") -> None:
+def create_box(name: str, is_goal=False, cost=None) -> None:
     """
     Creates a rectangle.
 
@@ -64,7 +64,7 @@ def create_box(name: str, is_goal=False, cost="") -> None:
     ttl.forward(0.2 * box_height)
     ttl.left(90)
 
-    if cost:
+    if cost is not None:
         ttl.left(180)
         ttl.forward(box_half_length)
         ttl.right(90)

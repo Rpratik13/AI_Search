@@ -98,7 +98,10 @@ def generate_sld(goal_state: str) -> dict[str, int]:
 
 
 def a_star_search(
-    initial_state: str, goal_state: str, heuristic: dict[str, int], print_tree: bool
+    initial_state: str,
+    goal_state: str,
+    heuristic: dict[str, int],
+    print_tree: bool,
 ):
     """
     Implements a star search to go from initial state to goal state.

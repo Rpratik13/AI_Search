@@ -18,7 +18,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "--algorithm",
     type=str,
-    choices=["bfs", "dfs", "greedy", "aStar", "aStarBucharestRelative"],
+    choices=["bfs", "dfs", "greedy", "greedyBucharestRelative", "aStar", "aStarBucharestRelative",],
     default="bfs",
     help="The algorithm to use",
 )
@@ -65,6 +65,14 @@ elif args.algorithm == "greedy":
     output = greedy_search(
         args.initial_state,
         args.goal_state,
+        generate_sld(args.goal_state),
+        args.print_tree,
+    )
+elif args.algorithm == "greedyBucharestRelative":
+    output = greedy_search(
+        args.initial_state,
+        args.goal_state,
+        generate_sld_relative_bucharest(args.goal_state),
         args.print_tree,
     )
 elif args.algorithm == "aStar":
