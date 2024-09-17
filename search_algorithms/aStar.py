@@ -114,6 +114,9 @@ def a_star_search(
         list[str]: The list of nodes in the path from initial state to goal state.
     """
     to_visit = PriorityQueue()
+    tree = Tree()
+
+    nodes_expanded_count = 0
 
     least_path_cost = {
         initial_state: 0,
@@ -125,17 +128,36 @@ def a_star_search(
 
     to_visit.enqueue(initial_state, [], 1, 0)
 
+    tree.add_node(initial_state, [], 0)
+
     while len(to_visit.queue):
         current_node = to_visit.dequeue()
 
+        nodes_expanded_count += 1
+
         if current_node.name == goal_state:
-            return path_to_state[goal_state]
+            if print_tree:
+                tree.set_goal(path_to_state[goal_state])
+                tree.print()
+
+            return (path_to_state[goal_state], nodes_expanded_count)
+
+        tree_nodes_to_add = []
 
         for neighbor in nodes_map[current_node.name]:
+
             actual_path_cost = (
                 current_node.cost + nodes_map[current_node.name][neighbor]
             )
             heuristic_path_cost = actual_path_cost + heuristic[neighbor]
+
+            tree_nodes_to_add.append(
+                (
+                    neighbor,
+                    [*current_node.path_to_state, current_node.name],
+                    heuristic_path_cost,
+                )
+            )
 
             if (
                 neighbor not in least_path_cost
@@ -153,3 +175,6 @@ def a_star_search(
                     neighbor,
                 ]
                 least_path_cost[neighbor] = actual_path_cost
+
+        for node in sorted(tree_nodes_to_add, key=lambda x: x[2]):
+            tree.add_node(node[0], node[1], node[2])

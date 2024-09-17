@@ -23,37 +23,37 @@ def DFS(
     stack = Stack()
     tree = Tree()
 
+    nodes_expanded_count = 0
+
     stack.push((initial_state, []))
+
+    tree.add_node(initial_state, [], 0)
 
     while True:
         current_item = stack.pop()
+
         state = current_item[0]  # Node name
 
         if state in current_item[1]:
             continue
 
-        cost = (
-            nodes_map[current_item[1][-1]][state]
-            if len(current_item)
-            and len(current_item[1])
-            and current_item[1][-1] in nodes_map
-            else None
-        )
-
-        tree.add_node(state, current_item[1], cost)
-
         path_to_state = [*current_item[1], state]
 
+        nodes_expanded_count += 1
+
         if state == goal_state:
+            if print_tree:
+                tree.set_goal(path_to_state)
+                tree.print()
+
             break
 
         neighbors = nodes_map[state]
 
-        for neighbor in neighbors:
+        for neighbor in sorted(list(neighbors.keys())):
             stack.push((neighbor, path_to_state))
 
-    if print_tree:
-        tree.set_goal(path_to_state)
-        tree.print()
+        for neighbor in sorted(list(neighbors.keys()), reverse=True):
+            tree.add_node(neighbor, [*current_item[1], state], None)
 
-    return path_to_state
+    return (path_to_state, nodes_expanded_count)

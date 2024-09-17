@@ -23,7 +23,11 @@ def BFS(
     queue = Queue()
     tree = Tree()
 
+    nodes_expanded_count = 0
+
     queue.enqueue((initial_state, []))
+
+    tree.add_node(initial_state, [], None)
 
     while True:
         current_item = queue.dequeue()
@@ -31,20 +35,13 @@ def BFS(
 
         path_to_state = [*current_item[1], state]  # Path to the state
 
-        cost = (
-            nodes_map[current_item[1][-1]][state]
-            if len(current_item)
-            and len(current_item[1])
-            and current_item[1][-1] in nodes_map
-            else None
-        )
-
-        tree.add_node(state, current_item[1], cost)
+        nodes_expanded_count += 1
 
         if state == goal_state:
             break
 
         for neighbor in nodes_map[state]:
+            tree.add_node(neighbor, path_to_state, None)
             if neighbor not in path_to_state:
                 queue.enqueue((neighbor, path_to_state))
 
@@ -52,4 +49,4 @@ def BFS(
         tree.set_goal(path_to_state)
         tree.print()
 
-    return path_to_state
+    return (path_to_state, nodes_expanded_count)

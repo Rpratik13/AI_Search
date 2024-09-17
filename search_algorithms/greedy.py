@@ -40,25 +40,27 @@ def greedy_search(
     tree = Tree()
     queue = PriorityQueue()
 
+    nodes_expanded_count = 0
+
     queue.enqueue(initial_state, [], 1)
+
+    tree.add_node(initial_state, [], 0)
 
     while True:
         current_item = queue.dequeue()
 
-        cost = (
-            nodes_map[current_item.path_to_state[-1]][current_item.name]
-            if len(current_item.path_to_state)
-            and current_item.path_to_state[-1] in nodes_map
-            else None
-        )
-
-        tree.add_node(current_item.name, current_item.path_to_state, cost)
+        nodes_expanded_count += 1
 
         if current_item.name == goal_state:
-            break
+            if print_tree:
+                tree.set_goal([*current_item.path_to_state, current_item.name])
+                tree.print()
+                break
 
         if current_item.name in current_item.path_to_state:
             continue
+
+        tree_nodes_to_add = []
 
         for neighbor in sort_neighbors_by_cost(nodes_map[current_item.name]):
             queue.enqueue(
@@ -67,9 +69,19 @@ def greedy_search(
                 maxDepth - len(current_item.path_to_state),
             )
 
-    if print_tree:
+            tree_nodes_to_add.append(
+                (
+                    neighbor[0],
+                    [*current_item.path_to_state, current_item.name],
+                    neighbor[1],
+                )
+            )
 
-        tree.set_goal([*current_item.path_to_state, current_item.name])
-        tree.print()
+        for neighbor in sorted(tree_nodes_to_add, key=lambda x: x[2]):
+            tree.add_node(
+                neighbor[0],
+                neighbor[1],
+                neighbor[2],
+            )
 
-    return [*current_item.path_to_state, current_item.name]
+    return ([*current_item.path_to_state, current_item.name], nodes_expanded_count)

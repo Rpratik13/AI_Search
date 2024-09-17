@@ -48,39 +48,38 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-path_to_state = None
 
 if args.algorithm == "bfs":
-    path_to_state = BFS(
+    output = BFS(
         args.initial_state,
         args.goal_state,
         args.print_tree,
     )
 elif args.algorithm == "dfs":
-    path_to_state = DFS(
+    output = DFS(
         args.initial_state,
         args.goal_state,
         args.print_tree,
     )
 elif args.algorithm == "greedy":
-    path_to_state = greedy_search(
+    output = greedy_search(
         args.initial_state,
         args.goal_state,
         args.print_tree,
     )
 elif args.algorithm == "aStar":
-    path_to_state = a_star_search(
+    output = a_star_search(
         args.initial_state,
         args.goal_state,
         generate_sld(args.goal_state),
         args.print_tree,
     )
 elif args.algorithm == "aStarBucharestRelative":
-    path_to_state = a_star_search(
+    output = a_star_search(
         args.initial_state,
         args.goal_state,
         generate_sld_relative_bucharest(args.goal_state),
         args.print_tree,
     )
 
-print(f"Path to Goal: {", ".join(path_to_state)}")
+print(f"Path to Goal: {", ".join(output[0])}")
