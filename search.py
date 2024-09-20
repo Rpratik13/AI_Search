@@ -43,6 +43,7 @@ parser.add_argument(
     "--print_tree",
     type=bool,
     default=False,
+    choices=[True, False]
 )
 
 
