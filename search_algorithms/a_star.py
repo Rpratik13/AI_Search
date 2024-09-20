@@ -2,7 +2,7 @@ import math
 
 from tree.tree import Tree
 from graph import nodes_map, bucharest_sld_map
-from data_structure.priorityQueueImpl import PriorityQueueItem, PriorityQueue
+from data_structure.priority_queue_impl import PriorityQueueItem, PriorityQueue
 
 
 def generate_sld_relative_bucharest(goal_state: str) -> dict[str, int]:

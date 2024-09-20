@@ -3,7 +3,7 @@ import argparse
 from search_algorithms.bfs import BFS
 from search_algorithms.dfs import DFS
 from search_algorithms.greedy import greedy_search
-from search_algorithms.aStar import (
+from search_algorithms.a_star import (
     generate_sld,
     generate_sld_relative_bucharest,
     a_star_search,

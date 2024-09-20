@@ -1,6 +1,6 @@
 from tree.tree import Tree
 from graph import nodes_map
-from data_structure.priorityQueueImpl import PriorityQueue
+from data_structure.priority_queue_impl import PriorityQueue
 
 
 maxDepth = len(nodes_map.keys())  # Estimate of max depth the search tree could reach

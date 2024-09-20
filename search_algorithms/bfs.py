@@ -1,6 +1,6 @@
 from tree.tree import Tree
 from graph import nodes_map
-from data_structure.queueImpl import Queue
+from data_structure.queue_impl import Queue
 
 
 def BFS(
@@ -17,7 +17,8 @@ def BFS(
         print_tree (bool): Decides if state tree is to be printed.
 
     Returns:
-        list[str]: The list of nodes in the path from initial state to goal state.
+        list[str]: The list of nodes in the path from initial state to goal
+        state.
     """
 
     queue = Queue()

@@ -1,6 +1,6 @@
 from tree.tree import Tree
 from graph import nodes_map
-from data_structure.stackImpl import Stack
+from data_structure.stack_impl import Stack
 
 
 def DFS(
